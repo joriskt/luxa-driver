@@ -143,8 +143,8 @@ export class LuxaFlag {
      * @param color The color.
      * @param target The LEDs to change the color of.
      */
-    color(color: string, target: FlagLEDs = FlagLEDs.ALL): void {
-        this.write(Operation.COLOR, target, this.decode(color), 0, 0);
+    color(color: string, target?: FlagLEDs): void {
+        this.write(Operation.COLOR, target ?? this.defaultTarget, this.decode(color), 0, 0);
     }
 
     /**

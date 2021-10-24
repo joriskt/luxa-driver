@@ -35,8 +35,6 @@ export enum FlagWave {
     FIVE = 0x5,
 }
 
-export type Color = { r: number; g: number; b: number };
-
 const COLOR_REG: RegExp = /^#?([0-9a-f]{1,2})([0-9a-f]{1,2})([0-9a-f]{1,2})$/i;
 
 export type FadeOptions = {
@@ -56,8 +54,8 @@ export function getFlag(): LuxaFlag | undefined {
 
 export function getAllFlags(): LuxaFlag[] {
     return devices(VENDOR_ID, PRODUCT_ID)
-    .filter(device => device.path !== undefined)
-    .map(device => new LuxaFlag(new HID(device.path!)));
+        .filter((device) => device.path !== undefined)
+        .map((device) => new LuxaFlag(new HID(device.path!)));
 }
 
 export class LuxaFlag {
@@ -79,10 +77,7 @@ export class LuxaFlag {
         this.brightness = Math.max(0, Math.min(1, brightness));
     }
 
-    private decode(color: string | Color): number[] {
-        if (typeof color !== 'string') {
-            return [color.r, color.g, color.b];
-        }
+    private decode(color: string): number[] {
         color = color.trim();
 
         const match: RegExpExecArray | null = COLOR_REG.exec(color);
@@ -186,5 +181,4 @@ export class LuxaFlag {
     off() {
         this.color('#000');
     }
-
 }

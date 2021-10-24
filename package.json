@@ -1,8 +1,9 @@
 {
     "name": "luxa-driver",
-    "version": "2.0.4",
+    "version": "2.0.5",
     "description": "Luxafor Driver",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc",
         "dev": "ts-node-dev src/index.ts",

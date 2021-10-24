@@ -8,11 +8,10 @@
         "strict": true,
         "preserveConstEnums": true,
         "moduleResolution": "node",
-        "sourceMap": true,
+        "sourceMap": false,
         "esModuleInterop": true,
         "types": ["node"],
         "declaration": true,
-        "declarationDir": "types",
         "declarationMap": true
     },
     "include": ["src", "dist"],

@@ -11,8 +11,10 @@
         "sourceMap": true,
         "esModuleInterop": true,
         "types": ["node"],
-        "declaration": true
+        "declaration": true,
+        "declarationDir": "types",
+        "declarationMap": true
     },
-    "include": ["src"],
+    "include": ["src", "dist"],
     "exclude": ["node_modules", "dist", "test"]
 }

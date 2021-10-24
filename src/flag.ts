@@ -42,21 +42,16 @@ export type FadeOptions = {
     duration?: number;
 };
 
-export type BlinkOptions = FadeOptions & {
+export type BlinkOptions = {
+    target?: FlagLEDs;
+    duration?: number;
     times?: number;
 };
 
-export type WaveOptions = BlinkOptions;
-
-export function getFlag(): LuxaFlag | undefined {
-    return getAllFlags()[0];
-}
-
-export function getAllFlags(): LuxaFlag[] {
-    return devices(VENDOR_ID, PRODUCT_ID)
-        .filter((device) => device.path !== undefined)
-        .map((device) => new LuxaFlag(new HID(device.path!)));
-}
+export type WaveOptions = {
+    duration?: number;
+    times?: number;
+};
 
 export class LuxaFlag {
     private readonly device: HID;
@@ -141,12 +136,12 @@ export class LuxaFlag {
     }
 
     /**
-     * Blinks in the specified color, and returns to the original color afterwards.
+     * Flashes in the specified color, and returns to the original color afterwards.
      *
-     * @param color The color to blink.
-     * @param opts Which LEDs to blink, how long to blink them, and how many times.
+     * @param color The color to flash.
+     * @param opts Which LEDs to flash, how long to blink them, and how many times.
      */
-    blink(color: string, opts?: BlinkOptions): void {
+    flash(color: string, opts?: BlinkOptions): void {
         this.write(
             Operation.FLASH,
             opts?.target ?? FlagLEDs.ALL,
@@ -180,5 +175,27 @@ export class LuxaFlag {
      */
     off() {
         this.color('#000');
+    }
+}
+
+// Method aliases:
+export interface LuxaFlag {
+    fadeTo: LuxaFlag['fade'];
+    blink: LuxaFlag['flash'];
+    strobe: LuxaFlag['flash'];
+}
+LuxaFlag.prototype.fadeTo = LuxaFlag.prototype.fade;
+LuxaFlag.prototype.blink = LuxaFlag.prototype.flash;
+LuxaFlag.prototype.strobe = LuxaFlag.prototype.flash;
+
+export namespace LuxaFlag {
+    export function findOne(): LuxaFlag | undefined {
+        return findAll()[0];
+    }
+
+    export function findAll(): LuxaFlag[] {
+        return devices(VENDOR_ID, PRODUCT_ID)
+            .filter((device) => device.path !== undefined)
+            .map((device) => new LuxaFlag(new HID(device.path!)));
     }
 }

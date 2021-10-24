@@ -1,6 +1,6 @@
 {
     "name": "luxa-driver",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Luxafor Driver",
     "main": "dist/index.js",
     "scripts": {
@@ -9,6 +9,7 @@
         "prepublish": "tsc"
     },
     "author": "Joris Klein Tijssink",
+    "repository": "github:joriskt/luxa-driver",
     "license": "MIT",
     "devDependencies": {
         "@types/node": "^16.11.4",

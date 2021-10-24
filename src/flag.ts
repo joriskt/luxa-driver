@@ -53,23 +53,51 @@ export type WaveOptions = {
     times?: number;
 };
 
+export type DefaultOptions = {
+    brightness?: number;
+    target?: FlagLEDs;
+    duration?: number;
+    times?: number;
+};
+
+function clamp(input: number, minimum: number, maximum: number): number {
+    return Math.min(Math.max(input, minimum), maximum);
+}
+
 export class LuxaFlag {
     private readonly device: HID;
-    private brightness: number;
+
+    private brightness: number = 1;
+    private defaultTarget: FlagLEDs = FlagLEDs.FRONT;
+    private defaultDuration: number = 20;
+    private defaultTimes: number = 5;
 
     constructor(device: HID) {
         this.device = device;
         this.device.pause();
-        this.brightness = 1;
     }
 
-    /**
-     * Sets a brightness factor.
-     *
-     * @param brightness The brightness in range [0,1].
-     */
     setBrightness(brightness: number): void {
-        this.brightness = Math.max(0, Math.min(1, brightness));
+        this.brightness = clamp(brightness, 0, 1);
+    }
+
+    setDefaultTarget(target: FlagLEDs): void {
+        this.defaultTarget = target;
+    }
+
+    setDefaultDuration(duration: number): void {
+        this.defaultDuration = clamp(duration, 0, 255);
+    }
+
+    setDefaultTimes(times: number): void {
+        this.defaultTimes = clamp(times, 0, 255);
+    }
+
+    configure(opts: DefaultOptions): void {
+        this.setBrightness(opts.brightness ?? this.brightness);
+        this.setDefaultTarget(opts.target ?? this.defaultTarget);
+        this.setDefaultDuration(opts.duration ?? this.defaultDuration);
+        this.setDefaultTimes(opts.times ?? this.defaultTimes);
     }
 
     private decode(color: string): number[] {
@@ -128,9 +156,9 @@ export class LuxaFlag {
     fade(color: string, opts?: FadeOptions): void {
         this.write(
             Operation.FADE,
-            opts?.target ?? FlagLEDs.ALL,
+            opts?.target ?? this.defaultTarget,
             this.decode(color),
-            opts?.duration ?? 20,
+            opts?.duration ?? this.defaultDuration,
             0
         );
     }
@@ -144,11 +172,11 @@ export class LuxaFlag {
     flash(color: string, opts?: BlinkOptions): void {
         this.write(
             Operation.FLASH,
-            opts?.target ?? FlagLEDs.ALL,
+            opts?.target ?? this.defaultTarget,
             this.decode(color),
-            opts?.duration ?? 20,
+            opts?.duration ?? this.defaultDuration,
             0,
-            opts?.times ?? 5
+            opts?.times ?? this.defaultTimes
         );
     }
 
@@ -165,8 +193,8 @@ export class LuxaFlag {
             wave,
             this.decode(color),
             0,
-            opts?.times ?? 5,
-            opts?.duration ?? 20
+            opts?.times ?? this.defaultTimes,
+            opts?.duration ?? this.defaultDuration
         );
     }
 

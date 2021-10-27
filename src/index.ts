@@ -1,1 +1,2 @@
-export * from './flag';
+export * from './device';
+export { FlagLEDs, FlagWave } from './protocol';
